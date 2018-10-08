@@ -22,6 +22,7 @@ class PokerHand {
   constructor(hand) {
     this.hand = hand;
     this.formattedHand = this.generateHand();
+    this.sortedValues = this.formattedHand.map((x) => {return x.value}).sort((a, b)=>{return a-b});
     this.handScore = this.calculateHandScore();
   }
 
@@ -50,45 +51,67 @@ class PokerHand {
   }
 
   calculateHandScore() {
-    if (this.isRoyalFlush()){
-      return {rank: 10, score: null};
-    } else if (this.isStraightFlush()){
-      return {rank: 9, score: this.isStraightFlush()}
-    } else {
-      return 'high card';
-    }
+    const scoringSystem = [this.isRoyalFlush(), this.isStraightFlush(), this.isFourOfKind(), this.isFullHouse()];
     
+    for (var i = 0; i < scoringSystem.length; i++){
+      if (scoringSystem[i]){
+        return scoringSystem[i];
+
+      }
+    }
+
   };
 
-  isRoyalFlush(){
-    const initialValue = 0;
-    return (
-      this.formattedHand.every((val, i, arr) => val.suit === arr[0].suit) && 
-      this.formattedHand.reduce(function (accumulator, currentValue) {
-          return accumulator + currentValue.value;
-      },initialValue) === 60
-    )
-  };
+  isFullHouse (){
+    let valueOfThree;
+    if(this.sortedValues[0] === this.sortedValues[2] && this.sortedValues[3] === this.sortedValues[4] || this.sortedValues[0] === this.sortedValues[1] && this.sortedValues[2] === this.sortedValues[4]){
+      if (this.sortedValues[0] === this.sortedValues[2]){
+        valueOfThree = this.sortedValues[0] + this.sortedValues[2];
+      } else if (valueOfThree = this.sortedValues[2] === this.sortedValues[4]){
+        valueOfThree = this.sortedValues[2] + this.sortedValues[4];
+      }
+      return {rank: 7, score: valueOfThree};
+    } else return false;
+  }
+
+  isFourOfKind() {
+    if (this.sortedValues.slice(0, 4)[0] === this.sortedValues.slice(0, 4)[3]){
+      return {rank: 8, score: this.sortedValues.slice(0, 4).reduce((accumulator, currentValue) => {
+        return accumulator + currentValue;
+      })};
+    } else return false;
+  }
 
   isStraightFlush() {
     const initialValue = 0;
-    const sortedHand = this.formattedHand.map((x) => {return x.value}).sort((a, b)=>{return a-b});
-    console.log(sortedHand, 'sorted');
-    const differenceBetweenValues = sortedHand[sortedHand.length -1] - sortedHand[0];
+    const differenceBetweenValues = this.sortedValues[this.sortedValues.length -1] - this.sortedValues[0];
     if(
       this.formattedHand.every((val, i, arr) => val.suit === arr[0].suit) && 
       differenceBetweenValues === 4
     ){
-      return this.formattedHand.reduce(function (accumulator, currentValue) {
+      return {rank: 9, score: this.formattedHand.reduce((accumulator, currentValue) => {
         return accumulator + currentValue.value;
-    },initialValue);
+    },initialValue)}
     } else{
       return false;
     }
   }
 
+  isRoyalFlush(){
+    const initialValue = 0;
+    if (
+      this.formattedHand.every((val, i, arr) => val.suit === arr[0].suit) && 
+      this.formattedHand.reduce(function (accumulator, currentValue) {
+          return accumulator + currentValue.value;
+      },initialValue) === 60
+    ) {
+      return {rank: 10, score: 100};
+    } else {
+      return false;
+    }
+  };
+
   compareWith(handTwo) {
-    // console.log(this.handScore, handTwo.handScore)
     return Result.TIE;
   }
 }
@@ -101,10 +124,9 @@ const Result = {
 
 const handOne = new PokerHand('AC 4S 5S 8C AH');
 const handTwo = new PokerHand('4S 5S 8C AS AD');
-const handThree = new PokerHand('AC KC QC JC 10C');
-const handFour = new PokerHand('10C 9C 8C 7C 6C');
-const handFive = new PokerHand('7C 6C 5C 4C 3C');
+const handThree = new PokerHand('4A 4H 4C 10S 10C');
+const handFour = new PokerHand('5A 5H 5C 5S 6C');
 
-console.log(handOne, 'divide', handTwo, 'divide', handThree, 'divide', handFour, 'divide', handFive);
+console.log(handOne, 'divide', handTwo, 'divide', handThree, 'divide', handFour);
 
 handOne.compareWith(handTwo);
