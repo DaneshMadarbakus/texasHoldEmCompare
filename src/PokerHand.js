@@ -72,7 +72,8 @@ class PokerHand {
 
   isStraightFlush() {
     const initialValue = 0;
-    const sortedHand = this.formattedHand.map((x) => {return x.value}).sort();
+    const sortedHand = this.formattedHand.map((x) => {return x.value}).sort((a, b)=>{return a-b});
+    console.log(sortedHand, 'sorted');
     const differenceBetweenValues = sortedHand[sortedHand.length -1] - sortedHand[0];
     if(
       this.formattedHand.every((val, i, arr) => val.suit === arr[0].suit) && 
@@ -101,8 +102,9 @@ const Result = {
 const handOne = new PokerHand('AC 4S 5S 8C AH');
 const handTwo = new PokerHand('4S 5S 8C AS AD');
 const handThree = new PokerHand('AC KC QC JC 10C');
+const handFour = new PokerHand('10C 9C 8C 7C 6C');
+const handFive = new PokerHand('7C 6C 5C 4C 3C');
 
-console.log(handOne, 'divide', handTwo, 'divide', handThree);
+console.log(handOne, 'divide', handTwo, 'divide', handThree, 'divide', handFour, 'divide', handFive);
 
 handOne.compareWith(handTwo);
-
