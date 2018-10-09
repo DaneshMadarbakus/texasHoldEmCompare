@@ -51,14 +51,30 @@ class PokerHand {
   }
 
   calculateHandScore() {
-    const scoringSystem = [this.isRoyalFlush(), this.isStraightFlush(), this.isFourOfKind(), this.isFullHouse(), this.isFlush()];
+    const scoringSystem = [this.isRoyalFlush(), this.isStraightFlush(), this.isFourOfKind(), this.isFullHouse(), this.isFlush(), this.isStraight()];
 
     for (let i = 0; i < scoringSystem.length; i++) {
       if (scoringSystem[i]) {
-        return scoringSystem[i]; 
+        return scoringSystem[i];
       }
     }
   };
+
+  
+  isStraight() {
+    const sortedVal = this.sortedValues;
+    const altSortedVal = sortedVal.map((x) => {
+      if (x === 14){
+        return 1;
+      } else return x;
+    }).sort();
+
+    if (this.sortedValues[4] - this.sortedValues[0] === 4 && this.sortedValues[4] - this.sortedValues[1] === 3 && this.sortedValues[4] - this.sortedValues[2] === 2 && this.sortedValues[4] - this.sortedValues[3] === 1) {
+      return { rank: 5, score: this.sortedValues.reverse() };
+    } else if (altSortedVal[4] - altSortedVal[0] === 4 && altSortedVal[4] - altSortedVal[1] === 3 && altSortedVal[4] - altSortedVal[2] === 2 && altSortedVal[4] - altSortedVal[3] === 1) {
+      return { rank: 5, score: altSortedVal.reverse() };
+    } else return false;  
+  }
 
   isFlush() {
     if (this.formattedHand.every((val, i, arr) => val.suit === arr[0].suit)) {
@@ -71,7 +87,7 @@ class PokerHand {
     if (this.sortedValues[0] === this.sortedValues[2] && this.sortedValues[3] === this.sortedValues[4] || this.sortedValues[0] === this.sortedValues[1] && this.sortedValues[2] === this.sortedValues[4]) {
       if (this.sortedValues[0] === this.sortedValues[2]) {
         valueOfThree = this.sortedValues[0];
-      } else if (valueOfThree = this.sortedValues[2] === this.sortedValues[4]) {
+      } else if (this.sortedValues[2] === this.sortedValues[4]) {
         valueOfThree = this.sortedValues[4];
       }
       return { rank: 7, score: [valueOfThree] };
@@ -79,7 +95,7 @@ class PokerHand {
   }
 
   isFourOfKind() {
-    if (this.sortedValues[0] === this.sortedValues[3] || this.sortedValues[1] === this.sortedValues[4] ) {
+    if (this.sortedValues[0] === this.sortedValues[3] || this.sortedValues[1] === this.sortedValues[4]) {
       return {
         rank: 8, score: [this.sortedValues[2]]
       }
@@ -144,8 +160,8 @@ const Result = {
 
 const handOne = new PokerHand('AC 4S 5S 8C AH');
 const handTwo = new PokerHand('4S 5S 8C AS AD');
-const handThree = new PokerHand('7A 7H 7C 7S 3C');
-const handFour = new PokerHand('5A 5H 5C 5S 6C');
+const handThree = new PokerHand('2D 7D 7D 7D 3D');
+const handFour = new PokerHand('2D AH 3C 4S 5C');
 
-console.log(handThree);
-console.log(handFour.compareWith(handThree));
+console.log(handFour);
+// console.log(handFour.compareWith(handThree));
