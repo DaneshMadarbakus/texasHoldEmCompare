@@ -1,24 +1,4 @@
-// export class PokerHand {
-//   constructor(handOne){
-//     console.log(handOne)
-//   }
-
-// 	compareWith(handTwo) {
-// 		return Result.TIE;
-// 	}
-
-// }
-
-// export const Result = {
-// 	WIN: 1,
-// 	LOSS: 2,
-// 	TIE: 3
-// };
-
-// export default PokerHand;
-
-
-class PokerHand {
+export class PokerHand {
   constructor(hand) {
     this.hand = hand;
     this.formattedHand = this.generateHand();
@@ -51,7 +31,7 @@ class PokerHand {
   }
 
   calculateHandScore() {
-    const scoringSystem = [this.isRoyalFlush(), this.isStraightFlush(), this.isFourOfKind(), this.isFullHouse(), this.isFlush(), this.isStraight()];
+    const scoringSystem = [this.isRoyalFlush(), this.isStraightFlush(), this.isFourOfKind(), this.isFullHouse(), this.isFlush(), this.isStraight(), this.isThree()];
 
     for (let i = 0; i < scoringSystem.length; i++) {
       if (scoringSystem[i]) {
@@ -60,7 +40,26 @@ class PokerHand {
     }
   };
 
-  
+  isThree(){
+    const sortedVal = this.sortedValues;
+    for (let n = 0; n < this.sortedValues.length; n++) {
+      let counter = 0;
+      for (let i = 0; i < this.sortedValues.length; i++){
+        if (this.sortedValues[n] === this.sortedValues[i] && counter < 3){
+          counter++;
+        } else if (counter === 3){
+          const score = sortedVal.filter((x) => {
+            return x !== this.sortedValues[n];
+          }).sort((a, b) => { return a - b }).reverse();
+          return { rank: 4, score: [this.sortedValues[n],this.sortedValues[n],this.sortedValues[n], score[0], score[1] ] };
+        }
+      }
+    }
+    return false;
+
+
+  }
+
   isStraight() {
     const sortedVal = this.sortedValues;
     const altSortedVal = sortedVal.map((x) => {
@@ -152,16 +151,18 @@ class PokerHand {
   }
 }
 
-const Result = {
+export const Result = {
   WIN: 1,
   LOSS: 2,
   TIE: 3
 };
 
-const handOne = new PokerHand('AC 4S 5S 8C AH');
-const handTwo = new PokerHand('4S 5S 8C AS AD');
-const handThree = new PokerHand('2D 7D 7D 7D 3D');
-const handFour = new PokerHand('2D AH 3C 4S 5C');
+// const handOne = new PokerHand('AC 4S 5S 8C AH');
+// const handTwo = new PokerHand('4S 5S 8C AS AD');
+// const handThree = new PokerHand('2D 7D 7D 7D 3D');
+// const handFour = new PokerHand('2D 4H 4C 4S 5C');
 
-console.log(handFour);
+// console.log(handFour);
 // console.log(handFour.compareWith(handThree));
+
+export default PokerHand;
